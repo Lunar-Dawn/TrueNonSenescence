@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace TrueNonSenescence
@@ -75,7 +76,9 @@ namespace TrueNonSenescence
             if(!Patches.PawnIsNonSenescent(___pawn) || !Patches.PawnIsNonSenescent(otherPawn))
                 return true;
             
-            __result = 1.0f;
+            float num1 = Mathf.InverseLerp(16f, 18f, ___pawn.ageTracker.AgeBiologicalYearsFloat);
+            float num2 = Mathf.InverseLerp(16f, 18f, otherPawn.ageTracker.AgeBiologicalYearsFloat);
+            __result = num1 * num2;
             return false;
         }
     }
