@@ -12,7 +12,7 @@ Because of that they missed a few areas where a Non-Senescent pawn's biological 
 - On their birthdays, Non-Senescent pawns can still get hearing loss.
 
 This small mod patches all these issues.
-Non-Senescent pawns are now ferile forever, never lose immunity gain speed, can't get hearing loss, and two Non-Senescent pawns will ignore their age gap for romancing each other.
+Non-Senescent pawns are now fertile forever, never lose immunity gain speed, can't get hearing loss, and two Non-Senescent pawns will ignore their age gap for romancing each other.
 Now your venerably old pawns just work™.
 
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3547377353)
