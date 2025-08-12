@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>True Non-Senescence</name>
+	<author>Lunar Dawn</author>
+	<description>Changes the fertility, immunity gain speed, and relationship chance calculations to ignore the biological age of non-senescent pawns. In addition, non-senescent pawns are now immune to hearing loss.</description>
+	<modIconPath>UI/Icons/Genes/Gene_NonSenescent</modIconPath>
+
+	<packageId>LunarDawn.TrueNonSenescence</packageId>
+	<modVersion>1.0.0</modVersion>
+
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+
+	<modDependencies>
+		<li>
+			<packageId>ludeon.rimworld.biotech</packageId>
+			<displayName>Biotech</displayName>
+		</li>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+			<steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2009463077</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>ludeon.rimworld.biotech</li>
+	</loadAfter>
+</ModMetaData>
