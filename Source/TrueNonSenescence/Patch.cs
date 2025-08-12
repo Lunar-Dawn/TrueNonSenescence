@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -13,10 +14,24 @@ namespace TrueNonSenescence
             harmony.PatchAll();
         }
 
+        private static readonly Dictionary<Pawn_GeneTracker, bool> SenescenceCache = new Dictionary<Pawn_GeneTracker, bool>();
+        public static void ClearCache(Pawn_GeneTracker tracker)
+        {
+            SenescenceCache.Remove(tracker);
+        }
+        
         private static readonly GeneDef NonSenescent = DefDatabase<GeneDef>.GetNamed("DiseaseFree");
         public static bool PawnIsNonSenescent(Pawn pawn)
         {
-            return pawn?.genes?.HasActiveGene(NonSenescent) ?? false;
+            if (pawn.genes is null)
+                return false;
+            
+            if(SenescenceCache.TryGetValue(pawn.genes, out var senescent))
+                return senescent;
+
+            senescent = pawn.genes.HasActiveGene(NonSenescent);
+            SenescenceCache[pawn.genes] = senescent;
+            return senescent;
         }
     }
     
@@ -62,6 +77,15 @@ namespace TrueNonSenescence
             
             __result = 1.0f;
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
+    class ClearCache
+    {
+        static void Postfix(Pawn_GeneTracker __instance)
+        {
+            Patches.ClearCache(__instance);
         }
     }
 }
