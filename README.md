@@ -8,11 +8,12 @@ Because of that they missed a few areas where a Non-Senescent pawn's biological 
 
 - Immunity gain speed falls to 50% after 120 years of age.
 - Fertility falls to 0% at 50 years for women, and at 90 years for men.
-- Romance carries a heavy penalty based on the absolute age gap.
+- Romance carries a heavy penalty based on the absolute age gap, which grow very insignificant at 600 years.
 - On their birthdays, Non-Senescent pawns can still get hearing loss.
+- Transhumanist Non-Senescent pawns still demand Age Reversal treatments.
 
 This small mod patches all these issues.
-Non-Senescent pawns are now fertile forever, never lose immunity gain speed, can't get hearing loss, and two Non-Senescent pawns will ignore their age gap for romancing each other.
+Non-Senescent pawns now never lose fertility or immunity gain speed from age, can't get hearing loss, and two Non-Senescent pawns will ignore their age gap for romancing each other, and don't care about Age Reversal.
 Now your venerably old pawns just work™.
 
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3547377353)
