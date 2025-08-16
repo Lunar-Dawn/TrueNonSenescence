@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Patch>
-	<Operation Class="PatchOperationAdd">
+	<Operation Class="PatchOperationAdd" MayRequire="Ludeon.RimWorld.Ideology">
 		<xpath>Defs/ThoughtDef[defName="AgeReversalReceived"]</xpath>
 		<value>
 			<nullifyingGenes>
-				<li MayRequire="Ludeon.RimWorld.Biotech">DiseaseFree</li>
+				<li>DiseaseFree</li>
 			</nullifyingGenes>
 		</value>
 	</Operation>
