@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThoughtDef[defName="AgeReversalReceived"]</xpath>
+		<value>
+			<nullifyingGenes>
+				<li MayRequire="Ludeon.RimWorld.Biotech">DiseaseFree</li>
+			</nullifyingGenes>
+		</value>
+	</Operation>
+</Patch>

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -14,6 +16,17 @@ namespace TrueNonSenescence
         {
             var harmony = new Harmony("LunarDawn.TrueNonSenescence");
             harmony.PatchAll();
+            
+            harmony.Patch(
+                AccessTools.Method(
+                    AccessTools.FirstInner(
+                        typeof(CompBiosculpterPod),
+                        t => t.Name.Contains("CompGetGizmosExtra")
+                    ),
+                    "MoveNext"
+                ),
+                transpiler: new HarmonyMethod(typeof(Patches),nameof(AutoAgeReversalPatch))
+            );
         }
 
         private static readonly Dictionary<Pawn_GeneTracker, bool> SenescenceCache = new Dictionary<Pawn_GeneTracker, bool>();
@@ -75,6 +88,54 @@ namespace TrueNonSenescence
             float num2 = Mathf.InverseLerp(16f, 18f, otherPawn.ageTracker.AgeBiologicalYearsFloat);
             __result = num1 * num2;
             return false;
+        }
+        
+        // --- BioSculpter Patches ---
+        [HarmonyPatch(typeof(Pawn_AgeTracker), "AgeReversalDemandedDeadlineTicks", MethodType.Getter)]
+        [HarmonyPrefix]
+        private static bool AgeReversalDeadlinePatch(Pawn ___pawn, ref long __result)
+        {
+            if (!PawnIsNonSenescent(___pawn))
+                return true;
+
+            __result = long.MaxValue;
+            return false;
+        }
+        
+        private static IEnumerable<CodeInstruction> AutoAgeReversalPatch(IEnumerable<CodeInstruction> instructions)
+        {
+            var getOrDefault = SymbolExtensions.GetMethodInfo((bool? n) => n.GetValueOrDefault());
+
+            var matcher = new CodeMatcher(instructions);
+
+            var pattern = new[]
+            {
+                new CodeMatch(OpCodes.Stloc_S),
+                new CodeMatch(OpCodes.Ldloca_S),
+                new CodeMatch(OpCodes.Call, getOrDefault),
+                new CodeMatch(OpCodes.Brfalse)
+            };
+
+            matcher
+                .MatchEndForward(pattern)
+                .ThrowIfNotMatch("Could not find pattern in CompGetGizmosExtra");
+            
+            var label = matcher.Operand;
+            
+            matcher
+                .Advance()
+                .Insert(
+                    //Load the Biosculpter
+                    CodeInstruction.LoadLocal(2),
+                    // Load the tuned pawn
+                    CodeInstruction.LoadField(typeof(CompBiosculpterPod), "biotunedTo"),
+                    // Check if they're Non-Senescent
+                    CodeInstruction.Call(() => PawnIsNonSenescent(null)),
+                    // Skip the gizmo if they are
+                    new CodeInstruction(OpCodes.Brtrue, label)
+                );
+
+            return matcher.Instructions();
         }
     }
 }
