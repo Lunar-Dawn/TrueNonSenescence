@@ -7,6 +7,7 @@ using Verse;
 namespace TrueNonSenescence
 {
     [StaticConstructorOnStartup]
+    [HarmonyPatch]
     public static class Patches
     {
         static Patches()
@@ -16,11 +17,6 @@ namespace TrueNonSenescence
         }
 
         private static readonly Dictionary<Pawn_GeneTracker, bool> SenescenceCache = new Dictionary<Pawn_GeneTracker, bool>();
-        public static void ClearCache(Pawn_GeneTracker tracker)
-        {
-            SenescenceCache.Remove(tracker);
-        }
-        
         private static readonly GeneDef NonSenescent = DefDatabase<GeneDef>.GetNamed("DiseaseFree");
         public static bool PawnIsNonSenescent(Pawn pawn)
         {
@@ -34,61 +30,51 @@ namespace TrueNonSenescence
             SenescenceCache[pawn.genes] = senescent;
             return senescent;
         }
-    }
-    
-    [HarmonyPatch(typeof(StatPart_FertilityByGenderAge), "AgeFactor")]
-    class PatchFertility
-    {
-        static bool Prefix(Pawn pawn, ref float __result)
+        [HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
+        [HarmonyPostfix]
+        private static void ClearCache(Pawn_GeneTracker __instance)
         {
-            if (!Patches.PawnIsNonSenescent(pawn))
+            SenescenceCache.Remove(__instance);
+        }
+        
+        [HarmonyPatch(typeof(StatPart_FertilityByGenderAge), "AgeFactor")]
+        [HarmonyPrefix]
+        private static bool PatchFertility(Pawn pawn, ref float __result)
+        {
+            if (!PawnIsNonSenescent(pawn))
                 return true;
 
             __result = 1.0f;
             return false;
         }
-    }
-    
-    [HarmonyPatch(typeof(StatPart_Age), "AgeMultiplier")]
-    class PatchImmunity
-    {
-        private static readonly StatDef ImmunityGainSpeed = DefDatabase<StatDef>.GetNamed("ImmunityGainSpeed");
         
-        static bool Prefix(StatPart_Age __instance, Pawn pawn, ref float __result)
+        private static readonly StatDef ImmunityGainSpeed = DefDatabase<StatDef>.GetNamed("ImmunityGainSpeed");
+        [HarmonyPatch(typeof(StatPart_Age), "AgeMultiplier")]
+        [HarmonyPrefix]
+        private static bool PatchImmunity(StatPart_Age __instance, Pawn pawn, ref float __result)
         {
             // Check if we're calculating Immunity Gain Speed
             if(__instance.parentStat != ImmunityGainSpeed)
                 return true;
             
-            if (!Patches.PawnIsNonSenescent(pawn))
+            if (!PawnIsNonSenescent(pawn))
                 return true;
             
             __result = 1.0f;
             return false;
         }
-    }
-    
-    [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.LovinAgeFactor))]
-    class PatchRomance
-    {
-        static bool Prefix(Pawn otherPawn, Pawn ___pawn, ref float __result)
+        
+        [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.LovinAgeFactor))]
+        [HarmonyPrefix]
+        private static bool PatchRomance(Pawn otherPawn, Pawn ___pawn, ref float __result)
         {
-            if(!Patches.PawnIsNonSenescent(___pawn) || !Patches.PawnIsNonSenescent(otherPawn))
+            if(!PawnIsNonSenescent(___pawn) || !PawnIsNonSenescent(otherPawn))
                 return true;
             
             float num1 = Mathf.InverseLerp(16f, 18f, ___pawn.ageTracker.AgeBiologicalYearsFloat);
             float num2 = Mathf.InverseLerp(16f, 18f, otherPawn.ageTracker.AgeBiologicalYearsFloat);
             __result = num1 * num2;
             return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
-    class ClearCache
-    {
-        static void Postfix(Pawn_GeneTracker __instance)
-        {
-            Patches.ClearCache(__instance);
         }
     }
 }
