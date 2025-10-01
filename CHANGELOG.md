@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.0] - 2025-10-02
+
+### Added
+- Non-Senescent Pawns no longer get age-related penalties when giving birth.
+
 ## [1.1.1] - 2025-08-16
 
 ### Fixed
@@ -21,6 +26,7 @@
 - Non-Senescent Pawns no longer consider their age difference when romancing each other.
 - Non-Senescent Pawns can no longer get Hearing Loss.
 
+[1.2.0]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Lunar-Dawn/TrueNonSenescence/releases/tag/v1.0.0
