@@ -27,6 +27,18 @@ namespace TrueNonSenescence
                 ),
                 transpiler: new HarmonyMethod(typeof(Patches),nameof(AutoAgeReversalPatch))
             );
+
+            // Fertility scale with lifespan replaces the entire StatPart for fertility age
+            // with its own custom percentage-based one, so we patch it as well.
+            var fertilityByGenderLifeSpanAgeFactor = AccessTools.Method(
+                AccessTools.TypeByName("FertilityScaleWithLifeSpan.StatPart_FertilityByGenderLifeSpan"),
+                "AgeFactor");
+            if (fertilityByGenderLifeSpanAgeFactor != null)
+            {
+                harmony.Patch(
+                    fertilityByGenderLifeSpanAgeFactor,
+                    prefix: new HarmonyMethod(typeof(Patches), nameof(PatchFertility)));
+            }
         }
 
         private static readonly Dictionary<Pawn_GeneTracker, bool> SenescenceCache = new Dictionary<Pawn_GeneTracker, bool>();
