@@ -6,7 +6,7 @@
 	<modIconPath>UI/Icons/Genes/Gene_NonSenescent</modIconPath>
 
 	<packageId>LunarDawn.TrueNonSenescence</packageId>
-	<modVersion>1.2.0</modVersion>
+	<modVersion>1.2.1</modVersion>
 
 	<supportedVersions>
 		<li>1.6</li>

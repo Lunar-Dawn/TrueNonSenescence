@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.1] - 2025-11-13
+
+### Compatibility
+- Patch the custom StatPart used by [Fertility scale with lifespan](https://steamcommunity.com/sharedfiles/filedetails/?id=3452215269) to respect non-senescence.
+
 ## [1.2.0] - 2025-10-02
 
 ### Added
@@ -26,6 +31,7 @@
 - Non-Senescent Pawns no longer consider their age difference when romancing each other.
 - Non-Senescent Pawns can no longer get Hearing Loss.
 
+[1.2.1]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.0.0...v1.1.0
