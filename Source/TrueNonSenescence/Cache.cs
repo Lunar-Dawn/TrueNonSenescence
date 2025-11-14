@@ -11,8 +11,6 @@ namespace TrueNonSenescence
 		private static readonly Dictionary<Pawn_GeneTracker, bool> SenescenceCache =
 			new Dictionary<Pawn_GeneTracker, bool>();
 
-		private static readonly GeneDef NonSenescent = DefDatabase<GeneDef>.GetNamed("DiseaseFree");
-
 		static Cache()
 		{
 			var harmony = new Harmony("LunarDawn.TrueNonSenescence");
@@ -31,7 +29,10 @@ namespace TrueNonSenescence
 			if (SenescenceCache.TryGetValue(pawn.genes, out var senescent))
 				return senescent;
 
-			senescent = pawn.genes.HasActiveGene(NonSenescent);
+			senescent = pawn.genes.GenesListForReading.Any(gene =>
+				gene.def.GetModExtension<GeneExtension>()?.givesNonSenescence ?? false
+			);
+
 			SenescenceCache[pawn.genes] = senescent;
 			return senescent;
 		}

@@ -55,6 +55,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="GeneExtension.cs" />
         <Compile Include="PatchNumericalFactors.cs" />
         <Compile Include="Cache.cs" />
         <Compile Include="PatchBiosculpter.cs" />
