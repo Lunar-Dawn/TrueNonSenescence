@@ -16,17 +16,6 @@ namespace TrueNonSenescence
         {
             var harmony = new Harmony("LunarDawn.TrueNonSenescence");
             harmony.PatchAll();
-            
-            harmony.Patch(
-                AccessTools.Method(
-                    AccessTools.FirstInner(
-                        typeof(CompBiosculpterPod),
-                        t => t.Name.Contains("CompGetGizmosExtra")
-                    ),
-                    "MoveNext"
-                ),
-                transpiler: new HarmonyMethod(typeof(Patches),nameof(AutoAgeReversalPatch))
-            );
 
             // Fertility scale with lifespan replaces the entire StatPart for fertility age
             // with its own custom percentage-based one, so we patch it as well.
@@ -45,7 +34,6 @@ namespace TrueNonSenescence
         [HarmonyPrefix]
         private static bool PatchFertility(Pawn pawn, ref float __result)
         {
-            
             if (!Cache.PawnIsNonSenescent(pawn))
                 return true;
 
@@ -155,54 +143,6 @@ namespace TrueNonSenescence
                     CodeInstruction.Call(() => ReplaceQualityIfNonSenescent(default, default, default, default)));
 
             return matcher.InstructionEnumeration();
-        }
-        
-        // --- BioSculpter Patches ---
-        [HarmonyPatch(typeof(Pawn_AgeTracker), "AgeReversalDemandedDeadlineTicks", MethodType.Getter)]
-        [HarmonyPrefix]
-        private static bool AgeReversalDeadlinePatch(Pawn ___pawn, ref long __result)
-        {
-            if (!Cache.PawnIsNonSenescent(___pawn))
-                return true;
-
-            __result = long.MaxValue;
-            return false;
-        }
-        
-        private static IEnumerable<CodeInstruction> AutoAgeReversalPatch(IEnumerable<CodeInstruction> instructions)
-        {
-            var getOrDefault = SymbolExtensions.GetMethodInfo((bool? n) => n.GetValueOrDefault());
-
-            var matcher = new CodeMatcher(instructions);
-
-            var pattern = new[]
-            {
-                new CodeMatch(OpCodes.Stloc_S),
-                new CodeMatch(OpCodes.Ldloca_S),
-                new CodeMatch(OpCodes.Call, getOrDefault),
-                new CodeMatch(OpCodes.Brfalse)
-            };
-
-            matcher
-                .MatchEndForward(pattern)
-                .ThrowIfNotMatch("Could not find pattern in CompGetGizmosExtra");
-            
-            var label = matcher.Operand;
-            
-            matcher
-                .Advance()
-                .Insert(
-                    //Load the Biosculpter
-                    CodeInstruction.LoadLocal(2),
-                    // Load the tuned pawn
-                    CodeInstruction.LoadField(typeof(CompBiosculpterPod), "biotunedTo"),
-                    // Check if they're Non-Senescent
-                    CodeInstruction.Call(() => Cache.PawnIsNonSenescent(null)),
-                    // Skip the gizmo if they are
-                    new CodeInstruction(OpCodes.Brtrue, label)
-                );
-
-            return matcher.Instructions();
         }
     }
 }

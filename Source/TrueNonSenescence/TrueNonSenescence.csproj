@@ -57,6 +57,7 @@
     <ItemGroup>
         <Compile Include="Patch.cs" />
         <Compile Include="Cache.cs" />
+        <Compile Include="PatchBiosculpter.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
