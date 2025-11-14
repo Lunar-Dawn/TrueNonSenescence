@@ -55,7 +55,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Patch.cs" />
+        <Compile Include="PatchNumericalFactors.cs" />
         <Compile Include="Cache.cs" />
         <Compile Include="PatchBiosculpter.cs" />
         <Compile Include="PatchBirthRitual.cs" />
