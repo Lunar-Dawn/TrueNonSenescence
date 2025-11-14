@@ -40,33 +40,13 @@ namespace TrueNonSenescence
                     prefix: new HarmonyMethod(typeof(Patches), nameof(PatchFertility)));
             }
         }
-
-        private static readonly Dictionary<Pawn_GeneTracker, bool> SenescenceCache = new Dictionary<Pawn_GeneTracker, bool>();
-        private static readonly GeneDef NonSenescent = DefDatabase<GeneDef>.GetNamed("DiseaseFree");
-        public static bool PawnIsNonSenescent(Pawn pawn)
-        {
-            if (pawn.genes is null)
-                return false;
-            
-            if(SenescenceCache.TryGetValue(pawn.genes, out var senescent))
-                return senescent;
-
-            senescent = pawn.genes.HasActiveGene(NonSenescent);
-            SenescenceCache[pawn.genes] = senescent;
-            return senescent;
-        }
-        [HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
-        [HarmonyPostfix]
-        private static void ClearCache(Pawn_GeneTracker __instance)
-        {
-            SenescenceCache.Remove(__instance);
-        }
         
         [HarmonyPatch(typeof(StatPart_FertilityByGenderAge), "AgeFactor")]
         [HarmonyPrefix]
         private static bool PatchFertility(Pawn pawn, ref float __result)
         {
-            if (!PawnIsNonSenescent(pawn))
+            
+            if (!Cache.PawnIsNonSenescent(pawn))
                 return true;
 
             __result = 1.0f;
@@ -82,7 +62,7 @@ namespace TrueNonSenescence
             if(__instance.parentStat != ImmunityGainSpeed)
                 return true;
             
-            if (!PawnIsNonSenescent(pawn))
+            if (!Cache.PawnIsNonSenescent(pawn))
                 return true;
             
             __result = 1.0f;
@@ -93,7 +73,7 @@ namespace TrueNonSenescence
         [HarmonyPrefix]
         private static bool PatchRomance(Pawn otherPawn, Pawn ___pawn, ref float __result)
         {
-            if(!PawnIsNonSenescent(___pawn) || !PawnIsNonSenescent(otherPawn))
+            if(!Cache.PawnIsNonSenescent(___pawn) || !Cache.PawnIsNonSenescent(otherPawn))
                 return true;
             
             float num1 = Mathf.InverseLerp(16f, 18f, ___pawn.ageTracker.AgeBiologicalYearsFloat);
@@ -116,7 +96,7 @@ namespace TrueNonSenescence
                 return true;
 
             var pawn = ritual.PawnWithRole(__instance.roleId);
-            if (pawn == null || !PawnIsNonSenescent(pawn))
+            if (pawn == null || !Cache.PawnIsNonSenescent(pawn))
                 return true;
 
             __result = __instance.curve.MaxY;
@@ -128,7 +108,7 @@ namespace TrueNonSenescence
             if (ritual.outcomeEffect.def != ChildBirth)
                 return quality;
             
-            if (!PawnIsNonSenescent(pawn))
+            if (!Cache.PawnIsNonSenescent(pawn))
                 return quality;
             
             return instance.curve.MaxY;
@@ -182,7 +162,7 @@ namespace TrueNonSenescence
         [HarmonyPrefix]
         private static bool AgeReversalDeadlinePatch(Pawn ___pawn, ref long __result)
         {
-            if (!PawnIsNonSenescent(___pawn))
+            if (!Cache.PawnIsNonSenescent(___pawn))
                 return true;
 
             __result = long.MaxValue;
@@ -217,7 +197,7 @@ namespace TrueNonSenescence
                     // Load the tuned pawn
                     CodeInstruction.LoadField(typeof(CompBiosculpterPod), "biotunedTo"),
                     // Check if they're Non-Senescent
-                    CodeInstruction.Call(() => PawnIsNonSenescent(null)),
+                    CodeInstruction.Call(() => Cache.PawnIsNonSenescent(null)),
                     // Skip the gizmo if they are
                     new CodeInstruction(OpCodes.Brtrue, label)
                 );
