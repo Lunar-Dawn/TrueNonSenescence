@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -50,7 +51,7 @@ namespace TrueNonSenescence
 			if (!Cache.PawnIsNonSenescent(pawn))
 				return;
 
-			__result = 1.0f;
+			__result = Math.Max(1.0f, __result);
 		}
 
 		private static void PatchRomance(ref float __result, Pawn otherPawn, Pawn ___pawn)
@@ -60,7 +61,7 @@ namespace TrueNonSenescence
 
 			float num1 = Mathf.InverseLerp(16f, 18f, ___pawn.ageTracker.AgeBiologicalYearsFloat);
 			float num2 = Mathf.InverseLerp(16f, 18f, otherPawn.ageTracker.AgeBiologicalYearsFloat);
-			__result = num1 * num2;
+			__result = Math.Max(num1 * num2, __result);
 		}
 
 		private static void PatchFertility(ref float __result, Pawn pawn)
@@ -68,7 +69,7 @@ namespace TrueNonSenescence
 			if (!Cache.PawnIsNonSenescent(pawn))
 				return;
 
-			__result = 1.0f;
+			__result = Math.Max(1.0f, __result);
 		}
 	}
 }

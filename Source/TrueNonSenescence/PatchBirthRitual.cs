@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
@@ -40,7 +41,7 @@ namespace TrueNonSenescence
 			if (pawn == null || !Cache.PawnIsNonSenescent(pawn))
 				return;
 
-			__result = __instance.curve.MaxY;
+			__result = Math.Max(__instance.curve.MaxY, __result);
 		}
 
 		private static float ReplaceQualityIfNonSenescent(float quality, RitualOutcomeComp_PawnAge instance, Pawn pawn,
@@ -49,7 +50,7 @@ namespace TrueNonSenescence
 			if (ritual.outcomeEffect.def != ChildBirth || !Cache.PawnIsNonSenescent(pawn))
 				return quality;
 
-			return instance.curve.MaxY;
+			return Math.Max(instance.curve.MaxY, quality);
 		}
 
 		private static IEnumerable<CodeInstruction> PatchBirthDesc(IEnumerable<CodeInstruction> instructions)
