@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.1] - 2026-09-30
+
+### Fixed
+- The pawn cache should no longer keep pawns in memory for the rest of a session, leaking memory.
+
 ## [1.3.0] - 2025-11-14
 
 This version involved refactoring a fair bit of code, keep an eye out for bugs.
@@ -42,6 +47,7 @@ This version involved refactoring a fair bit of code, keep an eye out for bugs.
 - Non-Senescent Pawns no longer consider their age difference when romancing each other.
 - Non-Senescent Pawns can no longer get Hearing Loss.
 
+[1.3.1]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/Lunar-Dawn/TrueNonSenescence/compare/v1.1.1...v1.2.0
