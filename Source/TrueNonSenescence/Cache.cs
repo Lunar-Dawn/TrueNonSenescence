@@ -8,8 +8,8 @@ namespace TrueNonSenescence
 	[StaticConstructorOnStartup]
 	public static class Cache
 	{
-		private static readonly Dictionary<Pawn_GeneTracker, bool> SenescenceCache =
-			new Dictionary<Pawn_GeneTracker, bool>();
+		private static readonly Dictionary<int, bool> SenescenceCache =
+			new Dictionary<int, bool>();
 
 		static Cache()
 		{
@@ -26,20 +26,20 @@ namespace TrueNonSenescence
 			if (pawn.genes is null)
 				return false;
 
-			if (SenescenceCache.TryGetValue(pawn.genes, out var senescent))
+			if (SenescenceCache.TryGetValue(pawn.thingIDNumber, out var senescent))
 				return senescent;
 
 			senescent = pawn.genes.GenesListForReading.Any(gene =>
 				gene.def.GetModExtension<GeneExtension>()?.givesNonSenescence ?? false
 			);
 
-			SenescenceCache[pawn.genes] = senescent;
+			SenescenceCache[pawn.thingIDNumber] = senescent;
 			return senescent;
 		}
 
 		private static void ClearCache(Pawn_GeneTracker __instance)
 		{
-			SenescenceCache.Remove(__instance);
+			SenescenceCache.Remove(__instance.pawn.thingIDNumber);
 		}
 	}
 }
