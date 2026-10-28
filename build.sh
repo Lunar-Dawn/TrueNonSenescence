@@ -15,4 +15,5 @@ fi
 mkdir $DIR
 cp -r ./About $DIR
 cp -r ./1.6 $DIR
+cp -r ./1.7 $DIR
 cp    ./loadFolders.xml $DIR
